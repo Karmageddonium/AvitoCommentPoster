@@ -1,0 +1,42 @@
+{
+  "manifest_version": 2,
+  "name": "Easy Word Replacer",
+  "description": "Easy Recursive Word Replacer, that will help you defeat Coronavirus",
+  "version": "0.01",
+  "developer": {
+    "name": "Enji Rouz",
+    "url": "https://github.com/EnjiRouz"
+  },
+
+  "icons": {
+    "16": "resources/icon16.png",
+    "48": "resources/icon48.png",
+    "128": "resources/icon128.png"
+  },
+
+  "permissions": [
+    "storage",
+    "http://*/*",
+    "https://*/*",
+    "tabs",
+    "contextMenus"
+  ],
+
+  "background": {
+    "scripts": ["content.js"],
+    "persistent": true
+  },
+
+  "browser_action": {
+    "default_icon": "resources/icon128.png",
+    "default_popup": "popup.html",
+    "icon_128": "resources/icon128.png"
+  },
+
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"]
+  }],
+
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';"
+}
