@@ -9,7 +9,11 @@ function AddObserver() {
     let a = document.getElementsByClassName("item-view-similars");
     if(a.length == 0)
     {
-        a = document.getElementsByClassName("styles-root-o9DEE");
+        a = document.getElementsByClassName("index-content-wrapper-3hB5p")
+        if(a.length == 0)
+        {
+            a = document.getElementsByClassName("styles-root-o9DEE");
+        }
     }
 
     if(a[0] === undefined) {
@@ -131,6 +135,20 @@ function GetLink(elementForSearchingIn, titleMarker) {
     }
 }
 
+function GetPrefferedLink(elementForSearchingIn) {
+    if (elementForSearchingIn.nodeType === Node.ELEMENT_NODE && elementForSearchingIn.getAttribute("class").indexOf("item-snippet-column-2") > -1) {
+        return elementForSearchingIn.childNodes[0].getAttribute("href");
+    } else {
+        for (let i = 0; i < elementForSearchingIn.childElementCount; i++) {
+            var result = GetLink(elementForSearchingIn.childNodes[i]);
+            if (result !== null) {
+                return result;
+            }
+        }
+        return null;
+    }
+}
+
 function AddCommentFrontAndData() {
     LoadDataFromStorage();
     let elements = document.getElementsByTagName('*'), i;
@@ -164,6 +182,16 @@ function AddCommentFrontAndData() {
             if(element.childNodes[element.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
             let newDiv = CreateCommentNode(GetLink(element, "title"));
             newDiv.style.marginTop = "5px";
+            element.appendChild(newDiv);
+        }
+        else if(element.getAttribute('data-marker') !== null
+            && element.getAttribute('data-marker').split("-")[0] === "item"
+            && !isNaN(element.getAttribute('data-marker').split("-")[1]))
+        {
+            if(element.childNodes[element.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
+            let newDiv = CreateCommentNode(GetPrefferedLink(element));
+            newDiv.style.marginLeft = "10px";
+            element.setAttribute("style", "width: 900px");
             element.appendChild(newDiv);
         }
     }
