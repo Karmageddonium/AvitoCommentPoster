@@ -2,6 +2,38 @@ var dataDictionary;
 
 window.onload = function() {
     AddCommentFrontAndData();
+    AddObserver();
+}
+
+function AddObserver() {
+    let a = document.getElementsByClassName("item-view-similars");
+    if(a.length == 0)
+    {
+        a = document.getElementsByClassName("styles-root-o9DEE");
+    }
+
+    if(a[0] === undefined) {
+        setTimeout(AddObserver, 500);
+        return;
+    }
+
+    // Options for the observer (which mutations to observe)
+    var config = { attributes: true, childList: true, subtree: true };
+
+    // Callback function to execute when mutations are observed
+    var callback = function(mutationsList, observer) {
+        for(var mutation of mutationsList) {
+            if (mutation.type == 'childList') {
+                AddCommentFrontAndData();
+            }
+        }
+    };
+
+    // Create an observer instance linked to the callback function
+    var observer = new MutationObserver(callback);
+
+    // Start observing the target node for configured mutations
+    observer.observe(a[0], config);
 }
 
 /**
@@ -85,8 +117,8 @@ function downloadAsFile(data) {
     a.click();
 }
 
-function GetLink(elementForSearchingIn) {
-    if (elementForSearchingIn.getAttribute("data-marker") === "item-title") {
+function GetLink(elementForSearchingIn, titleMarker) {
+    if (elementForSearchingIn.nodeType === Node.ELEMENT_NODE && elementForSearchingIn.getAttribute("data-marker") === titleMarker) {
         return elementForSearchingIn.getAttribute("href");
     } else {
         for (let i = 0; i < elementForSearchingIn.childElementCount; i++) {
@@ -104,20 +136,34 @@ function AddCommentFrontAndData() {
     let elements = document.getElementsByTagName('*'), i;
     for (i in elements) {
         let element = elements[i];
-        if (element.getAttribute('data-marker') === 'item') {
+        if(element.nodeType !== Node.ELEMENT_NODE) continue;
+        
+        if (element.getAttribute('data-marker') !== null && element.getAttribute('data-marker') === 'item')
+        {
             //У списка вип-объявлений ширину менять не надо, ибо они идут строкой. Новый div добавится столбиком внизу.
             if (element.parentNode.className.indexOf("items-vip") === -1) {
                 element.setAttribute("style", "width: 860px");
             }
             let ourRoot = element.childNodes[0].tagName === "META" ? element.childNodes[1] : element.childNodes[0];
-            let newDiv = CreateCommentNode(GetLink(element));
+            let newDiv = CreateCommentNode(GetLink(element, "item-title"));
             newDiv.style.marginLeft = "10px";
+
+            if(ourRoot.childNodes[ourRoot.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
             ourRoot.appendChild(newDiv);
         }
         else if(element.getAttribute("class") !== null && element.getAttribute("class").indexOf("item-view-contacts") > -1)
         {
+            let lastnode = element.childNodes[element.childNodes.length - 1];
+            if(lastnode.nodeType === Node.ELEMENT_NODE && lastnode.getAttribute("id") === "someotheridiii") continue;
             let newDiv = CreateCommentNode(window.location.pathname);
             newDiv.style.marginTop = "10px";
+            element.appendChild(newDiv);
+        }
+        else if(element.getAttribute('data-marker') !== null && element.getAttribute('data-marker') === 'bx-recommendations-block-item')
+        {
+            if(element.childNodes[element.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
+            let newDiv = CreateCommentNode(GetLink(element, "title"));
+            newDiv.style.marginTop = "5px";
             element.appendChild(newDiv);
         }
     }
