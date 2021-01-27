@@ -20,6 +20,18 @@ if(importButton) {
     });
 }
 
+let exportButton = document.getElementById("export-button");
+if(exportButton) {
+    exportButton.addEventListener("click", function()
+    {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {message: "downloadFile"}, function(response) {
+                console.log(response.response);
+            });
+        });
+    });
+}
+
 /**
  * Сохранение настроек и применение их на странице.
  * Применение настроек на странице происходит при помощи их передачи в сообщении, предназначенном для background скрипта

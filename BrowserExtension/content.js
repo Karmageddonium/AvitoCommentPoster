@@ -1,4 +1,4 @@
-var dataDictionary = new Map();
+var dataDictionary;
 
 window.onload = function() {
     AddCommentFrontAndData();
@@ -35,9 +35,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                     let tmpRow = lines[i].trim();
                     if (tmpRow !== "") {
                         let splittedRow = lines[i].split(" ");
-                        localStorage.setItem(splittedRow[0], splittedRow[1]);
+                        dataDictionary.set(splittedRow[0], splittedRow[1]);
                     }
                 }
+
+                SaveDataToStorage();
             };
 
             reader.readAsText(file);
@@ -52,7 +54,45 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         fileChooser.click();
         sendResponse({response: "fileChooser clicked"});
     }
+    else if(request.message === "downloadFile")
+    {
+        downloadAsFile(GetDataAsText());
+    }
 });
+
+
+
+function SaveDataToStorage()
+{
+    localStorage.setItem("commentDataMap", JSON.stringify(Array.from(dataDictionary.entries())));
+}
+
+function LoadDataFromStorage() {
+    dataDictionary = new Map(JSON.parse(localStorage.getItem("commentDataMap")));
+}
+function GetDataAsText() {
+    let arr = Array.from(dataDictionary.entries())
+    //let data = ;
+
+    //let data = Object.entries(dataDictionary).map(a => a.join(" "));
+    let result = "";
+    //let count = keys.count;
+    for(let i = 0; i < arr.length; i++)
+    {
+        let element = arr[i];
+        //result += data[i] + (i < keys.length - 1 ? "\r\n" : "");
+        result += element[0] + " " + element[1] + (i < arr.length - 1 ? "\r\n" : "");
+    }
+    return result;
+}
+
+function downloadAsFile(data) {
+    let a = document.createElement("a");
+    let file = new Blob([data], {type: 'application/json'});
+    a.href = URL.createObjectURL(file);
+    a.download = "example.txt";
+    a.click();
+}
 
 function GetLink(elementForSearchingIn) {
     if (elementForSearchingIn.getAttribute("data-marker") === "item-title") {
@@ -69,12 +109,14 @@ function GetLink(elementForSearchingIn) {
 }
 
 function AddCommentFrontAndData() {
+    LoadDataFromStorage();
     let elements = document.getElementsByTagName('*'), i;
     for (i in elements) {
         let element = elements[i];
         if (element.getAttribute('data-marker') === 'item') {
             let newP = document.createElement("p");
             newP.textContent = "Мой комментарий:";
+
 
             let newTextArea = document.createElement("textarea");
             newTextArea.setAttribute("style", "resize: none; height: 130px; width: 200px");
@@ -85,14 +127,19 @@ function AddCommentFrontAndData() {
 
             let currentItemLink = GetLink(element);
             //"item-title"
-            newTextArea.textContent = localStorage.getItem(currentItemLink);// ourContainerElement.childNodes[0].childNodes[1].getAttribute("href");
+
+
+            //newTextArea.textContent =  localStorage.getItem(currentItemLink);
+
+            newTextArea.textContent = dataDictionary.get(currentItemLink);
 
             let newBtn = document.createElement("button");
             let savedColor = newBtn.style.backgroundColor;
             newBtn.setAttribute("style", "height: 20px; margin-top: 5px");
             newBtn.textContent = "Сохранить";
             newBtn.onclick = function () {
-                localStorage.setItem(currentItemLink, newTextArea.value);
+                dataDictionary.set(currentItemLink, newTextArea.value);
+                SaveDataToStorage();
                 newBtn.style.backgroundColor = savedColor;
             };
 
