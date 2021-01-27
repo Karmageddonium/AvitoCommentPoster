@@ -19,7 +19,8 @@
     "http://*/*",
     "https://*/*",
     "tabs",
-    "contextMenus"
+    "contextMenus",
+    "https://www.example.com/uploads"
   ],
 
   "background": {
