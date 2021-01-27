@@ -3,63 +3,56 @@ var dataDictionary;
 window.onload = function() {
     AddCommentFrontAndData();
 }
+
 /**
  * Осуществление взаимодействия pop-up формы с background скриптом при помощи отправки-получения сообщений
  * в активной вкладке с передачей в них необходимых для работы параметров.
  * Переданные параметры перезаписывают предыдущие настройки
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.todo === "changeTexts") {
+    switch (request.message) {
+        case "applyChanges":
+            AddCommentFrontAndData();
+            break;
+        case "chooseFile":
+            var fileChooser = document.createElement('input');
+            fileChooser.type = 'file';
+            fileChooser.addEventListener('change', function () {
+                console.log("file change");
+                var file = fileChooser.files[0];
 
+                var reader = new FileReader();
+                reader.onload = function () {
+                    let lines = reader.result.split(/\r\n|\r|\n/g);
 
-        AddCommentFrontAndData();
-
-        sendResponse({
-            response: "Message received"
-        });
-        return true;
-    } else if (request.message == "chooseFile") {
-        /* Creates an `input[type="file]` */
-        var fileChooser = document.createElement('input');
-        fileChooser.type = 'file';
-
-        fileChooser.addEventListener('change', function () {
-            console.log("file change");
-            var file = fileChooser.files[0];
-
-            var reader = new FileReader();
-            reader.onload = function () {
-                let lines = reader.result.split(/\r\n|\r|\n/g);
-
-                for (let i = 0; i < lines.length; i++) {
-                    let tmpRow = lines[i].trim();
-                    if (tmpRow !== "") {
-                        let splittedRow = lines[i].split(" ");
-                        dataDictionary.set(splittedRow[0], splittedRow[1]);
+                    for (let i = 0; i < lines.length; i++) {
+                        let tmpRow = lines[i].trim();
+                        if (tmpRow !== "") {
+                            let splittedRow = lines[i].split(" ");
+                            dataDictionary.set(splittedRow[0], splittedRow[1]);
+                        }
                     }
-                }
 
-                SaveDataToStorage();
-            };
+                    SaveDataToStorage();
+                };
 
-            reader.readAsText(file);
-            form.reset();   // <-- Resets the input so we do get a `change` event,
-                            //     even if the user chooses the same file
-        });
+                reader.readAsText(file);
+                form.reset(); //Resets the input so we do get a `change` event, even if the user chooses the same file
+            });
 
-        /* Wrap it in a form for resetting */
-        var form = document.createElement('form');
-        form.appendChild(fileChooser);
+            /* Wrap it in a form for resetting */
+            var form = document.createElement('form');
+            form.appendChild(fileChooser);
 
-        fileChooser.click();
-        sendResponse({response: "fileChooser clicked"});
+            fileChooser.click();
+            break;
+        case "downloadFile":
+            downloadAsFile(GetDataAsText());
+            break;
     }
-    else if(request.message === "downloadFile")
-    {
-        downloadAsFile(GetDataAsText());
-    }
+
+    return true;
 });
-
 
 
 function SaveDataToStorage()
@@ -67,20 +60,18 @@ function SaveDataToStorage()
     localStorage.setItem("commentDataMap", JSON.stringify(Array.from(dataDictionary.entries())));
 }
 
-function LoadDataFromStorage() {
+function LoadDataFromStorage()
+{
     dataDictionary = new Map(JSON.parse(localStorage.getItem("commentDataMap")));
 }
+
+//Подготоавливает данные из словаря для записи в текстовый документ
 function GetDataAsText() {
     let arr = Array.from(dataDictionary.entries())
-    //let data = ;
-
-    //let data = Object.entries(dataDictionary).map(a => a.join(" "));
     let result = "";
-    //let count = keys.count;
     for(let i = 0; i < arr.length; i++)
     {
         let element = arr[i];
-        //result += data[i] + (i < keys.length - 1 ? "\r\n" : "");
         result += element[0] + " " + element[1] + (i < arr.length - 1 ? "\r\n" : "");
     }
     return result;
@@ -117,20 +108,13 @@ function AddCommentFrontAndData() {
             let newP = document.createElement("p");
             newP.textContent = "Мой комментарий:";
 
-
             let newTextArea = document.createElement("textarea");
             newTextArea.setAttribute("style", "resize: none; height: 130px; width: 200px");
             newTextArea.onclick = function () {
                 event.stopPropagation();
             };
 
-
             let currentItemLink = GetLink(element);
-            //"item-title"
-
-
-            //newTextArea.textContent =  localStorage.getItem(currentItemLink);
-
             newTextArea.textContent = dataDictionary.get(currentItemLink);
 
             let newBtn = document.createElement("button");
@@ -159,19 +143,13 @@ function AddCommentFrontAndData() {
             newDiv.appendChild(newTextArea);
             newDiv.appendChild(newBtn);
 
-            //#4CAF50
 
+            //У списка вип-объявлений ширину менять не надо, ибо они идут строкой. Новый div добавится столбиком внизу.
             if (element.parentNode.className.indexOf("items-vip") === -1) {
                 element.setAttribute("style", "width: 860px");
             }
             let ourRoot = element.childNodes[0].tagName === "META" ? element.childNodes[1] : element.childNodes[0];
             ourRoot.appendChild(newDiv);
-            //element.childNodes[0].appendChild(newDiv);
         }
-        /*
-                    if((' ' + elements[i].className + ' ').indexOf(' ' + matchClass + ' ')
-                        > -1) {
-                        elements[i].innerHTML = content;
-                    }*/
     }
 }

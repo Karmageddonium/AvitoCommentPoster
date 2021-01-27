@@ -1,11 +1,11 @@
 {
   "manifest_version": 2,
-  "name": "Easy Word Replacer",
-  "description": "Easy Recursive Word Replacer, that will help you defeat Coronavirus",
-  "version": "0.01",
+  "name": "Avito Comment Adder",
+  "description": "Adding commenting ability to avito.ru",
+  "version": "0.9",
   "developer": {
-    "name": "Enji Rouz",
-    "url": "https://github.com/EnjiRouz"
+    "name": "Aleksandr",
+    "url": "https://t.me/gkarma"
   },
 
   "icons": {
