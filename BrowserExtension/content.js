@@ -1,6 +1,8 @@
 var dataDictionary;
 
 window.onload = function() {
+    if(document.location.host !== "avito.ru") return;
+
     AddCommentFrontAndData();
     AddObserver();
 }
@@ -46,6 +48,8 @@ function AddObserver() {
  * Переданные параметры перезаписывают предыдущие настройки
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if(document.location.host !== "avito.ru") return;
+    
     switch (request.message) {
         case "applyChanges":
             AddCommentFrontAndData();
