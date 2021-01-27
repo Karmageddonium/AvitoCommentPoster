@@ -8,17 +8,17 @@ window.onload = function() {
 }
 
 function AddObserver() {
-    let a = document.getElementsByClassName("item-view-similars");
-    if(a.length == 0)
+    let elementGroupForFutherObservation = document.getElementsByClassName("item-view-similars");
+    if(elementGroupForFutherObservation.length == 0)
     {
-        a = document.getElementsByClassName("index-content-wrapper-3hB5p")
-        if(a.length == 0)
+        elementGroupForFutherObservation = document.getElementsByClassName("index-content-wrapper-3hB5p")
+        if(elementGroupForFutherObservation.length == 0)
         {
-            a = document.getElementsByClassName("styles-root-o9DEE");
+            elementGroupForFutherObservation = document.getElementsByClassName("styles-root-o9DEE");
         }
     }
 
-    if(a[0] === undefined) {
+    if(elementGroupForFutherObservation[0] === undefined) {
         setTimeout(AddObserver, 500);
         return;
     }
@@ -39,7 +39,7 @@ function AddObserver() {
     var observer = new MutationObserver(callback);
 
     // Start observing the target node for configured mutations
-    observer.observe(a[0], config);
+    observer.observe(elementGroupForFutherObservation[0], config);
 }
 
 /**
@@ -49,7 +49,7 @@ function AddObserver() {
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if(document.location.host !== "avito.ru") return;
-    
+
     switch (request.message) {
         case "applyChanges":
             AddCommentFrontAndData();
