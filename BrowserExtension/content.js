@@ -105,51 +105,61 @@ function AddCommentFrontAndData() {
     for (i in elements) {
         let element = elements[i];
         if (element.getAttribute('data-marker') === 'item') {
-            let newP = document.createElement("p");
-            newP.textContent = "Мой комментарий:";
-
-            let newTextArea = document.createElement("textarea");
-            newTextArea.setAttribute("style", "resize: none; height: 130px; width: 200px");
-            newTextArea.onclick = function () {
-                event.stopPropagation();
-            };
-
-            let currentItemLink = GetLink(element);
-            newTextArea.textContent = dataDictionary.get(currentItemLink);
-
-            let newBtn = document.createElement("button");
-            let savedColor = newBtn.style.backgroundColor;
-            newBtn.setAttribute("style", "height: 20px; margin-top: 5px");
-            newBtn.textContent = "Сохранить";
-            newBtn.onclick = function () {
-                dataDictionary.set(currentItemLink, newTextArea.value);
-                SaveDataToStorage();
-                newBtn.style.backgroundColor = savedColor;
-            };
-
-            let needSaveColor = "#8EFF00";
-            if (newTextArea.addEventListener) {
-                newTextArea.addEventListener('input', function() {
-                    newBtn.style.backgroundColor = needSaveColor;
-                    // event handling code for sane browsers
-                }, false);
-            }
-
-            let newDiv = document.createElement("div");
-            newDiv.className = "first";
-            newDiv.id = "someotheridiii"; //not neccessary but probably useful
-            newDiv.setAttribute("style", "position: relative; height:100%; width:200px; margin-left: 10px");
-            newDiv.appendChild(newP);
-            newDiv.appendChild(newTextArea);
-            newDiv.appendChild(newBtn);
-
-
             //У списка вип-объявлений ширину менять не надо, ибо они идут строкой. Новый div добавится столбиком внизу.
             if (element.parentNode.className.indexOf("items-vip") === -1) {
                 element.setAttribute("style", "width: 860px");
             }
             let ourRoot = element.childNodes[0].tagName === "META" ? element.childNodes[1] : element.childNodes[0];
+            let newDiv = CreateCommentNode(GetLink(element));
+            newDiv.style.marginLeft = "10px";
             ourRoot.appendChild(newDiv);
         }
+        else if(element.getAttribute("class") !== null && element.getAttribute("class").indexOf("item-view-contacts") > -1)
+        {
+            let newDiv = CreateCommentNode(window.location.pathname);
+            newDiv.style.marginTop = "10px";
+            element.appendChild(newDiv);
+        }
     }
+}
+
+function CreateCommentNode(currentItemLink) {
+    let newP = document.createElement("p");
+    newP.textContent = "Мой комментарий:";
+
+    let newTextArea = document.createElement("textarea");
+    newTextArea.setAttribute("style", "resize: none; height: 130px; width: 200px");
+    newTextArea.onclick = function () {
+        event.stopPropagation();
+    };
+
+    newTextArea.textContent = dataDictionary.get(currentItemLink);
+
+    let newBtn = document.createElement("button");
+    let savedColor = newBtn.style.backgroundColor;
+    newBtn.setAttribute("style", "height: 20px; margin-top: 5px");
+    newBtn.textContent = "Сохранить";
+    newBtn.onclick = function () {
+        dataDictionary.set(currentItemLink, newTextArea.value);
+        SaveDataToStorage();
+        newBtn.style.backgroundColor = savedColor;
+    };
+
+    let needSaveColor = "#8EFF00";
+    if (newTextArea.addEventListener) {
+        newTextArea.addEventListener('input', function() {
+            newBtn.style.backgroundColor = needSaveColor;
+            // event handling code for sane browsers
+        }, false);
+    }
+
+    let newDiv = document.createElement("div");
+    newDiv.className = "first";
+    newDiv.id = "someotheridiii"; //not neccessary but probably useful
+    newDiv.setAttribute("style", "position: relative; height:100%; width:200px;");
+    newDiv.appendChild(newP);
+    newDiv.appendChild(newTextArea);
+    newDiv.appendChild(newBtn);
+
+    return newDiv;
 }
