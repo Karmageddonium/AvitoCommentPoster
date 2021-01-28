@@ -1,7 +1,7 @@
 var dataDictionary;
 
 window.onload = function() {
-    if(document.location.host !== "avito.ru") return;
+    if(document.location.host !== "www.avito.ru") return;
 
     AddCommentFrontAndData();
     AddObserver();
@@ -48,7 +48,7 @@ function AddObserver() {
  * Переданные параметры перезаписывают предыдущие настройки
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if(document.location.host !== "avito.ru") return;
+    if(document.location.host !== "www.avito.ru") return;
 
     switch (request.message) {
         case "applyChanges":
@@ -130,7 +130,7 @@ function GetLink(elementForSearchingIn, titleMarker) {
         return elementForSearchingIn.getAttribute("href");
     } else {
         for (let i = 0; i < elementForSearchingIn.childElementCount; i++) {
-            var result = GetLink(elementForSearchingIn.childNodes[i]);
+            var result = GetLink(elementForSearchingIn.childNodes[i], titleMarker);
             if (result !== null) {
                 return result;
             }
@@ -141,10 +141,12 @@ function GetLink(elementForSearchingIn, titleMarker) {
 
 function GetPrefferedLink(elementForSearchingIn) {
     if (elementForSearchingIn.nodeType === Node.ELEMENT_NODE && elementForSearchingIn.getAttribute("class").indexOf("item-snippet-column-2") > -1) {
-        return elementForSearchingIn.childNodes[0].getAttribute("href");
+        let result = elementForSearchingIn.childNodes[0].getAttribute("href");
+        if(result === null) result = elementForSearchingIn.childNodes[1].getAttribute("href");
+        return result;
     } else {
         for (let i = 0; i < elementForSearchingIn.childElementCount; i++) {
-            var result = GetLink(elementForSearchingIn.childNodes[i]);
+            var result = GetPrefferedLink(elementForSearchingIn.childNodes[i]);
             if (result !== null) {
                 return result;
             }
