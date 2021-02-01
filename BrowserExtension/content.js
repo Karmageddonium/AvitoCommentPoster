@@ -1,7 +1,7 @@
 var dataDictionary;
 
-window.onload = function() {
-    if(document.location.host !== "www.avito.ru") return;
+window.onload = function () {
+    if (document.location.host !== "www.avito.ru") return;
 
     AddCommentFrontAndData();
     AddObserver();
@@ -9,26 +9,24 @@ window.onload = function() {
 
 function AddObserver() {
     let elementGroupForFutherObservation = document.getElementsByClassName("item-view-similars");
-    if(elementGroupForFutherObservation.length == 0)
-    {
+    if (elementGroupForFutherObservation.length == 0) {
         elementGroupForFutherObservation = document.getElementsByClassName("index-content-wrapper-3hB5p")
-        if(elementGroupForFutherObservation.length == 0)
-        {
+        if (elementGroupForFutherObservation.length == 0) {
             elementGroupForFutherObservation = document.getElementsByClassName("styles-root-o9DEE");
         }
     }
 
-    if(elementGroupForFutherObservation[0] === undefined) {
+    if (elementGroupForFutherObservation[0] === undefined) {
         setTimeout(AddObserver, 500);
         return;
     }
 
     // Options for the observer (which mutations to observe)
-    var config = { attributes: true, childList: true, subtree: true };
+    var config = {attributes: true, childList: true, subtree: true};
 
     // Callback function to execute when mutations are observed
-    var callback = function(mutationsList, observer) {
-        for(var mutation of mutationsList) {
+    var callback = function (mutationsList, observer) {
+        for (var mutation of mutationsList) {
             if (mutation.type == 'childList') {
                 AddCommentFrontAndData();
             }
@@ -48,7 +46,7 @@ function AddObserver() {
  * Переданные параметры перезаписывают предыдущие настройки
  */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if(document.location.host !== "www.avito.ru") return;
+    if (document.location.host !== "www.avito.ru") return;
 
     switch (request.message) {
         case "applyChanges":
@@ -69,7 +67,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                         let tmpRow = lines[i].trim();
                         if (tmpRow !== "") {
                             let splittedRow = lines[i].split(" ");
-                            dataDictionary.set(splittedRow[0], splittedRow[1]);
+                            let comment = "";
+                            for (let j = 1; j < splittedRow.length; j++) {
+                                comment += splittedRow[j];
+                                if (j != splittedRow.length - 1) {
+                                    comment += " ";
+                                }
+                            }
+                            dataDictionary.set(splittedRow[0], comment);
                         }
                     }
 
@@ -95,13 +100,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 
-function SaveDataToStorage()
-{
+function SaveDataToStorage() {
     localStorage.setItem("commentDataMap", JSON.stringify(Array.from(dataDictionary.entries())));
 }
 
-function LoadDataFromStorage()
-{
+function LoadDataFromStorage() {
     dataDictionary = new Map(JSON.parse(localStorage.getItem("commentDataMap")));
 }
 
@@ -109,8 +112,7 @@ function LoadDataFromStorage()
 function GetDataAsText() {
     let arr = Array.from(dataDictionary.entries())
     let result = "";
-    for(let i = 0; i < arr.length; i++)
-    {
+    for (let i = 0; i < arr.length; i++) {
         let element = arr[i];
         result += element[0] + " " + element[1] + (i < arr.length - 1 ? "\r\n" : "");
     }
@@ -142,7 +144,7 @@ function GetLink(elementForSearchingIn, titleMarker) {
 function GetPrefferedLink(elementForSearchingIn) {
     if (elementForSearchingIn.nodeType === Node.ELEMENT_NODE && elementForSearchingIn.getAttribute("class").indexOf("item-snippet-column-2") > -1) {
         let result = elementForSearchingIn.childNodes[0].getAttribute("href");
-        if(result === null) result = elementForSearchingIn.childNodes[1].getAttribute("href");
+        if (result === null) result = elementForSearchingIn.childNodes[1].getAttribute("href");
         return result;
     } else {
         for (let i = 0; i < elementForSearchingIn.childElementCount; i++) {
@@ -160,10 +162,9 @@ function AddCommentFrontAndData() {
     let elements = document.getElementsByTagName('*'), i;
     for (i in elements) {
         let element = elements[i];
-        if(element.nodeType !== Node.ELEMENT_NODE) continue;
-        
-        if (element.getAttribute('data-marker') !== null && element.getAttribute('data-marker') === 'item')
-        {
+        if (element.nodeType !== Node.ELEMENT_NODE) continue;
+
+        if (element.getAttribute('data-marker') !== null && element.getAttribute('data-marker') === 'item') {
             //У списка вип-объявлений ширину менять не надо, ибо они идут строкой. Новый div добавится столбиком внизу.
             if (element.parentNode.className.indexOf("items-vip") === -1) {
                 element.setAttribute("style", "width: 860px");
@@ -172,29 +173,23 @@ function AddCommentFrontAndData() {
             let newDiv = CreateCommentNode(GetLink(element, "item-title"));
             newDiv.style.marginLeft = "10px";
 
-            if(ourRoot.childNodes[ourRoot.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
+            if (ourRoot.childNodes[ourRoot.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
             ourRoot.appendChild(newDiv);
-        }
-        else if(element.getAttribute("class") !== null && element.getAttribute("class").indexOf("item-view-contacts") > -1)
-        {
+        } else if (element.getAttribute("class") !== null && element.getAttribute("class").indexOf("item-view-contacts") > -1) {
             let lastnode = element.childNodes[element.childNodes.length - 1];
-            if(lastnode.nodeType === Node.ELEMENT_NODE && lastnode.getAttribute("id") === "someotheridiii") continue;
+            if (lastnode.nodeType === Node.ELEMENT_NODE && lastnode.getAttribute("id") === "someotheridiii") continue;
             let newDiv = CreateCommentNode(window.location.pathname);
             newDiv.style.marginTop = "10px";
             element.appendChild(newDiv);
-        }
-        else if(element.getAttribute('data-marker') !== null && element.getAttribute('data-marker') === 'bx-recommendations-block-item')
-        {
-            if(element.childNodes[element.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
+        } else if (element.getAttribute('data-marker') !== null && element.getAttribute('data-marker') === 'bx-recommendations-block-item') {
+            if (element.childNodes[element.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
             let newDiv = CreateCommentNode(GetLink(element, "title"));
             newDiv.style.marginTop = "5px";
             element.appendChild(newDiv);
-        }
-        else if(element.getAttribute('data-marker') !== null
+        } else if (element.getAttribute('data-marker') !== null
             && element.getAttribute('data-marker').split("-")[0] === "item"
-            && !isNaN(element.getAttribute('data-marker').split("-")[1]))
-        {
-            if(element.childNodes[element.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
+            && !isNaN(element.getAttribute('data-marker').split("-")[1])) {
+            if (element.childNodes[element.childNodes.length - 1].getAttribute("id") === "someotheridiii") continue;
             let newDiv = CreateCommentNode(GetPrefferedLink(element));
             newDiv.style.marginLeft = "10px";
             element.setAttribute("style", "width: 900px");
@@ -227,7 +222,7 @@ function CreateCommentNode(currentItemLink) {
 
     let needSaveColor = "#8EFF00";
     if (newTextArea.addEventListener) {
-        newTextArea.addEventListener('input', function() {
+        newTextArea.addEventListener('input', function () {
             newBtn.style.backgroundColor = needSaveColor;
             // event handling code for sane browsers
         }, false);
