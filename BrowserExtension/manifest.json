@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Avito Comment Adder",
   "description": "Adding commenting ability to avito.ru",
   "version": "1.0",
