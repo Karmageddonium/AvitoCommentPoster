@@ -15,12 +15,7 @@
   },
 
   "permissions": [
-    "storage",
-    "http://*/*",
-    "https://*/*",
-    "tabs",
-    "contextMenus",
-    "https://www.example.com/uploads"
+    
   ],
 
   "background": {
