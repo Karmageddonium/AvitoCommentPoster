@@ -35,5 +35,6 @@ https://chrome.google.com/webstore/detail/avito-comment-adder/hpoolpnhodapahmeif
 Если расширение сэкономило вам кучу времени, вы можете ~скинуть деньги на лечение~ подарить мне кофе)))
 
 https://yoomoney.ru/to/410012694289877
+
 https://www.buymeacoffee.com/karmageddonium
 
