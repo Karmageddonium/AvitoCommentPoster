@@ -35,3 +35,5 @@ https://chrome.google.com/webstore/detail/avito-comment-adder/hpoolpnhodapahmeif
 Если расширение сэкономило вам кучу времени, вы можете подарить мне кофе)))
 
 https://www.buymeacoffee.com/karmageddonium
+
+<iframe src="https://yoomoney.ru/quickpay/shop-widget?writer=seller&targets=%D0%A1%D0%BA%D0%B8%D0%BD%D1%83%D1%82%D1%8C%20%D0%B4%D0%B5%D0%BD%D1%8C%D0%B3%D0%B8%20%D0%BD%D0%B0%20%D0%BB%D0%B5..%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5&targets-hint=&default-sum=50&button-text=14&payment-type-choice=on&mobile-payment-type-choice=on&hint=&successURL=&quickpay=shop&account=410012694289877" width="423" height="250" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
