@@ -29,6 +29,7 @@ https://chrome.google.com/webstore/detail/avito-comment-adder/hpoolpnhodapahmeif
 ![](https://sun9-72.userapi.com/impg/C8QbNxayo7i3iR1l0k3R3zTfd0IwXhB7ACsnGw/aqCGMc-W5oQ.jpg?size=1019x843&quality=96&proxy=1&sign=79b6442481291fa4f79e7c97ab102b3b&type=album)
 
 Добавляемый в разные места элемент представляет собой просто текстовое поле и кнопку внизу, которая при изменении текста в поле становится зелёной - это сигнал к тому что есть несохранённые изменения. По нажатии кнопки, соответственно, изменения сохраняются и будут показаны при обновлении страницы (в будушем можно было бы сделать так чтобы на уже открытых страницах сразу без обновления подтягивались изменения, но это в будущем)
+
 ![](https://sun9-46.userapi.com/impg/yWtukk0H-aFuMMO0CFVxw3FcbbqosH0NPxGcSw/RxRhPW9dusU.jpg?size=377x344&quality=96&proxy=1&sign=86fa70f16984741b0805d7e86dd018a9&type=album)
 
 Если расширение сэкономило вам кучу времени, вы можете подарить мне кофе)))
