@@ -32,7 +32,8 @@ https://chrome.google.com/webstore/detail/avito-comment-adder/hpoolpnhodapahmeif
 
 ![](https://sun9-46.userapi.com/impg/yWtukk0H-aFuMMO0CFVxw3FcbbqosH0NPxGcSw/RxRhPW9dusU.jpg?size=377x344&quality=96&proxy=1&sign=86fa70f16984741b0805d7e86dd018a9&type=album)
 
-Если расширение сэкономило вам кучу времени, вы можете подарить мне кофе)))
+Если расширение сэкономило вам кучу времени, вы можете ~скинуть деньги на лечение~ подарить мне кофе)))
 
+https://yoomoney.ru/to/410012694289877
 https://www.buymeacoffee.com/karmageddonium
 
